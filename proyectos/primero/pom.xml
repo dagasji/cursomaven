@@ -1,0 +1,131 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>cursomaven</groupId>
+  <artifactId>primero</artifactId>
+  <version>1.0-RELEASE</version>
+  <packaging>jar</packaging>
+
+  <name>primero</name>
+  <url>http://maven.apache.org</url>
+  
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+<!--     <jdbc.driver>com.mysql.MySqlDriver</jdbc.driver> -->
+<!--     <jdbc.url>url:sdasdasd</jdbc.url> -->
+<!--     <jdbc.user>dba</jdbc.user> -->
+<!--     <jdbc.pwd>123</jdbc.pwd>   -->
+  </properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
+  
+  <build>
+  
+  	<resources>
+  		<resource>
+  			<directory>src/main/resources</directory>
+  			<filtering>true</filtering>  			
+  		</resource>
+  		<resource>
+  			<directory>src/main/java</directory>
+  			<filtering>true</filtering>  			  			
+  		</resource>
+  	</resources>
+  	
+  	<filters>
+  		<filter>src/main/filters/desarrollo.properties</filter>
+  	</filters>
+
+	<plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>3.3</version>
+			<configuration>
+				<!-- http://maven.apache.org/plugins/maven-compiler-plugin/ -->
+				<source>1.7</source>
+				<target>1.7</target>
+
+			</configuration>
+		</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-source-plugin</artifactId>
+			<version>2.4</version>
+			<executions>
+				<execution>            	
+		            <goals>
+		              <goal>jar</goal>
+		            </goals>
+            		<phase>package</phase>
+          		</execution>
+			
+			</executions>
+		</plugin>
+		
+		<plugin>
+			<groupId>cursomaven</groupId>
+			<artifactId>demo-maven-plugin</artifactId>
+			<version>1.0-RELEASE</version>
+			<configuration>
+				<jdbcUrl>url</jdbcUrl>
+				<cadenas>
+					<cadena>Dani</cadena>
+					<cadena>Juan</cadena>
+				</cadenas>
+				<enteros>
+					<entero>100</entero>
+				</enteros>
+				<tabla>
+					<euro>1.54</euro>
+					<dolar>471.1</dolar>
+				</tabla>
+				<usuario>
+					<clave>pass</clave>
+					<nombre>usuario</nombre>				
+				</usuario>
+			</configuration>
+			<executions>
+				<execution>
+					<phase>compile</phase>
+					<goals>
+						<goal>demo</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
+	</plugins>
+  </build>
+
+	<distributionManagement>
+		<repository>
+			<id>cursomaven_r</id>
+			<name>Repositorio del curso de maven</name>
+			<url>http://localhost:8081/nexus/content/repositories/cursomaven_r</url>
+		</repository>
+
+		<snapshotRepository>
+			<id>cursomaven_s</id>
+			<url>http://localhost:8081/nexus/content/repositories/cursomaven_s</url>
+		</snapshotRepository>
+		
+	</distributionManagement>
+  
+  
+</project>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<hibernate-configuration>
+	
+	<session-factory>
+		
+		<property name="connection.driver_class">${jdbc.driver}</property>
+		<property name="connection.url">${jdbc.url}</property>
+		<property name="connection.username">${jdbc.user}</property>
+		<property name="connection.password">${jdbc.pwd}</property>	
+	</session-factory>
+	
+</hibernate-configuration>

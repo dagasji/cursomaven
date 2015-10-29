@@ -1,0 +1,654 @@
+Linux:
+
+Cualquier cosa que dejemos en /etc/profile.d se ejecuta en cualquier usuario al arrancar
+
+Arrancar ftp (por defecto usa la carpeta home del usuariiio)
+service proftpd start
+
+Maven:
+
+/conf/setting.xml afecta a cualquier proyecto
+
+pom.xml  > .m2/settings.xml > /conf/settings.xml
+
+Maven se divide en plugins y fases
+
+#Ciclos predefinidos
+
+#Principal:
+validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy, 
+
+validate, initialize, compile, test, package, install, deploy
+
+#Limpieza:
+pre-clean, clean, post-clean
+
+#Generar documentación:
+pre-site, site, post-site, site-deploy
+
+
+#######################################################
+
+#En maven todo son proyectos: plugins, arquetipos, proyectos....
+
+#Configuración proncipal de un proyecto maven
+groupId: fabricante o creador del proyecto (en Java el paquete base)
+artifactId: nombre del proyectos
+version: la versión del proyecto, el modo RELEASE, SNAPSHOT
+
+
+# Invocacion del plugins
+mvn groupId:artifactId:version
+
+mvn alias (suele coincidir con el artifactId)
+
+Un plugin puede teener multiples funcinalidades (goals)
+Normalmente todos los plugins tienen el goal help. PPor ejemplo: help:help
+
+
+
+###################################################################################
+Los almacenes (reposry pueden ser locales o remotos)
+
+Siempre hay uno local (para cada usuario de la máquina)
+
+~/...m2/repository
+
+Siempre habrá al menos uno remoto, se controla con el pom.xml y el superpom
+
+
+###################################################################################
+Ver documentación
+
+mvn archetype:help -Ddetail=true
+
+
+
+###################################################################################
+Crear un nuevo proyecto se usa el comando mvn archetype:generate
+
+mvn archetype:generate -DgroupId=cursomaven -DartifactId=primero -DarchetypeArchifactId=maven-archetype-quickstart -DinteractiveMode=false
+
+-DinteractiveMode=false se usa para evitar que te pregunte si la configuracion es correcta
+
+###################################################################################
+Algunas fases importantes:
+
+maven package
+compila y empaqueta dentro del target
+
+mvn source:jar
+genera un jar con los fuentes
+
+mvn javadoc:jar
+genera un jar con el javadoc
+
+
+###################################################################################
+
+Maven provee un pom principal del que heredan todos los pom y se llama superpom.
+La suma del superpom y tu pom se llama pom efectivo (effective pom)
+
+Con el goal help:effective-pom podemos ver ese pom efectivo
+
+mvn help:effective-pom -Doutput=pom-efectivo.xml
+
+**con la propiedad -Doutput=nombre-fichero.xml te generará un fichero con la salida
+
+###################################################################################
+
+#Filtrar
+
+setting.xml
+pom.xml
+environment SO
+properties
+Filter files
+
+Te permite configurar de forma dinámica propiedades de un fichero
+
+Incluir las propiedades en los distintos ficheros (se puede incluir dentro de xml, properties o cualquier otro fichero)
+   Por ejemplo ${nombrepropiedad}
+
+Para sustituir esas propiedades existen varias opciones:
+
+->> Creando propiedades propias en el pom.xml
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jdbc.driver>com.mysql.MySqlDriver</jdbc.driver>
+    <jdbc.url>url:sdasdasd</jdbc.url>
+    <jdbc.user>dba</jdbc.user>
+    <jdbc.pwd>123</jdbc.pwd>  
+  </properties>
+
+->> Elementos del setting.xml
+directorioAlmacenLocal=${settings.localRepository}
+
+->> Elementos del pom.xml (elementos ya existentes)
+logFile=${project.name}
+
+->> Variables del sistema operativo
+directorioJava=${env.JAVA_HOME}
+
+->> Propiedades de java* por comando
+logLevel=${nivelDeRegistro}
+
+*Para pasarle las propiedades de java hay que hacerlo por linea de comando:
+
+mvn compile -DnivelDeRegistro="nivel 123"
+
+->> Por último podemos usar los filters files:
+
+- Creamos un fichero properties con las propiedades
+- Añadimos dentro del pom.xml un apartado filters dentro de build:
+
+	<filters>
+  		<filter>src/main/filters/desarrollo.properties</filter>
+  	</filters>
+
+
+Para que sustituya las propiedades hay que activarlo**, para ello hay que añadir dentro de "build" el elemento "resources" quedando algo así:
+
+  <build>
+  
+  	<resources>
+  		<resource>
+  			<directory>src/main/resources</directory>
+  			<filtering>true</filtering>  			
+  		</resource>
+  	</resources>
+
+	....
+   </build>
+
+
+**Este procesado se ejecuta durante la fase process-resources, por lo que por ejemplo si ejecutamos "compile" se nos ejecutará dicho procesado.
+
+***En el caso de que queramos sustituir propiedades dentro de por ejemplo ficheros java, simplemente habrá que añadir un nuevo elemento resource apuntando al directorio java
+
+###################################################################################
+Importante definir la codificación del proyecto:
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  
+  ...
+
+###################################################################################
+añadir un plugin a una fase concreta:
+
+<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-source-plugin</artifactId>
+	<version>2.4</version>
+	<executions>
+		<execution>            	
+            <goals>
+              <goal>jar</goal>
+            </goals>
+	<phase>package</phase>
+	</execution>
+	
+	</executions>
+</plugin>
+
+Con esto, estamos añadiendo la ejecución del plugin maven-source-plugin:jar a la fase package
+
+###################################################################################
+Crear un proyecto web
+mvn archetype:generate -DgroupId=cursomaven -DartifactId=proweb -Dversion=1.0-RELEASE -DarchetypeArtifactId=maven-archetype-webapp -DinteractiveMode=false
+
+###################################################################################
+Repositorio central de maven. Web en la que poder consultar las coordenadas
+http://mvnrepository.com/artifact/org.apache.maven
+
+###################################################################################
+Si queremos evitar que una dependencia se transmita por transitividad a todos los proyectos que la usen, debemos usar la propiedad "optional"
+<dependency>
+	<groupId>log4j</groupId>
+	<artifactId>log4j</artifactId>
+	<version>1.2.17</version>
+	<optional>true</optional>
+</dependency>
+
+###################################################################################
+Scope.
+Distintos ambitos que podemos configurarle a las dependencias
+
+compile: lo copia al paquete generado
+provided: lo provee el entorno donde se ejecute la aplicación. Por ejemplo en el servidor de aplicaciones.
+runtime: Lo ensambla en el paquete generado y en la ejecución de las pruebas unitarias, pero no lo añade al classpath para compilar
+system: añadir una dependencia de un jar externo
+test: solo se añadirá en las pruebas unitarias
+
+###################################################################################
+
+En el caso de querer añadir una dependencia que no es maven, debemos añadir la dependencia de la siguiente forma
+
+	<dependency>
+		<groupId></groupId>
+		<artifactId></artifactId>
+		<version></version>
+		<scope>system</scope>
+		<systemPath>${java.home}/../lib/tools.jar</systemPath>
+	</dependency>
+
+###################################################################################
+En el caso de querer que al empaquetar una aplicación no se añadan algunas librerias que se están importando por transitividad
+
+Primero deberemos ver de donde vienen las dependencias:
+
+mvn dependency:help 
+mvn dependency:analyze -> Te indica las dependencias que no se usan
+mvn dependency:list -> lista de dependencias
+mvn dependency:tree -> lista de dependencias en modo arbol
+
+Para realizar la exclusión debemos añadir lo siguiente a la dependency
+
+	<exclusions>
+		<exclusion>
+		<groupId>xml-apis</groupId>
+		<artifactId>xml-apis</artifactId>
+	</exclusion>
+
+
+###################################################################################
+Instalar en el repositorio.
+
+mvn install:install-file -DgroupId=com.acme -DartifactId=derby-jdbc -Dversion=10.12.1.1 -Dpackaging=jar -DgeneratePom=true -Dfile=/home/fibonacci/db-derby-10.12.1.1-bin/lib/derbyclient.jar
+
+De esta forma podemos instalar en nuestro repositorio maven un jar que no sea maven.
+
+
+###################################################################################
+
+mvn archetype:generate -DgroupId=cursomaven -DartifactId=prosite -Dversion=1.0-RELEASE -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+
+###################################################################################
+Publicar documentaciión en un servidor:
+
+Maven Wagon ess un plugin que proporciona conectividad con repositorios (ftp, ssh, etc)
+
+http://maven.apache.org/wagon/
+
+Por un lado tenemos que añadir a build la extensión:
+
+
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ftp</artifactId>
+				<version>2.10</version>
+			</extension>
+		</extensions>
+	</build>
+
+Por otro hay que añadir el elemento 
+
+	<distributionManagement>
+		<site>
+			<id>wikisite</id>
+			<name>Portal de proyectos</name>
+			<url>ftp://localhost/wiki</url>			
+		</site>
+	</distributionManagement>
+
+Por último hay que añadir al settings.xml las credenciales del ftp:
+
+    <server>
+      <id>wikisite</id>
+      <username>fibonacci</username>
+      <password>fedora2015</password>
+    </server>
+
+Para generar la documentación y subirla al repositorrrio:
+	mvn site-deploy
+
+
+###################################################################################
+Cifrar claves en el settings.xml
+
+Usamos el comando mv -emp para generar una clave maestra
+
+Usaremos esa clave para crear el fichero ~/.m2/settings-security.xml
+
+<settingsSecurity>
+	<master>{UkEy9Pi8+iUHSeZi7Ev1IiLVEl8/+QdHYogv7AIhZQw=}</master>	
+</settingsSecurity>
+
+Por último usamos el siguiente comando para cifrar la password:
+
+mvn -ep fedora2015
+
+Nos devolverá la clave que debemos incluir en el settings.xml
+
+###################################################################################
+Profiles
+
+Los perfiles se pueden crear en el pom.xml o en el fichero settings.xml
+
+Los perfiles no on excluyentes, si hay 2 perfiles activos, se aplicará la configuración de cada uno de ellos
+
+Con el comando siguiente podemos ver los profiles activos:
+	mvn help:all-profiles
+
+Se le puede pasar la propiedad directamente para que active un profile
+	mvn help:all-profiles -Dauditoria=true
+
+Podemos forzar que se ejecute uno o varios profiles
+	mvn help:all-profiles -Pweblogic,produccion -Dauditoria=true
+
+Podemos forzar que NO se ejecute un   perfil (!nombre_perfil):
+	mvn help:all-profiles -P 'weblogic,produccion,!jdk7' -Dauditoria=true
+
+
+*La propiedad "activeByDefault" de los profiles solo funciona si no hay otro perfil activo
+
+**Los profiles que pongamos en el 
+
+Ejemplos de profiles:
+
+<profiles>
+		<profile>
+      		<id>desarrollo</id>
+      		<activation>
+      			<activeByDefault>true</activeByDefault>      			
+      		</activation>
+      		
+      		<build>
+      			<filters>
+				<filter>src/main/filters/desarrollo.properties</filter>
+			</filters>      		
+      		</build>  
+      		
+      		<properties>
+      			<nivelDeRegistro>DEBUG</nivelDeRegistro>
+      		</properties>    		
+    	</profile>
+    	
+    	<profile>
+      		<id>produccion</id>      		
+      		<build>
+      			<filters>
+				<filter>src/main/filters/produccion.properties</filter>
+			</filters>      		
+      		</build>   
+      		
+      		<properties>
+      			<nivelDeRegistro>WARN</nivelDeRegistro>
+      		</properties>     		
+    	</profile>
+    	
+    	<profile>
+      		<id>weblogic</id>
+      		<activation>      			
+      			<file>
+      				<exists>src/main/webapp/WEB-INF/weblogic.xml</exists>
+      			</file>
+      		</activation>
+    	</profile>
+    	
+    	<profile>
+      		<id>jdk7</id>
+      		<activation>      			
+      			<jdk>[1.5,1.8]</jdk>
+      		</activation>
+    	</profile>
+    	
+    	<profile>
+      		<id>linuxi386</id>
+      		<activation>      			
+      			<os>
+      				<name>linux</name>
+      				<family>unix</family>
+      				<arch>i386</arch>
+      			</os>
+      		</activation>
+    	</profile>
+    	
+    	<profile>
+      		<id>modoAuditoria</id>
+      		<activation>      			
+      			<property>
+      				<name>auditoria</name>
+      				<value>true</value>
+      			</property>
+      		</activation>
+    	</profile>
+    	
+</profiles>
+
+###################################################################################
+HERENCIA
+
+El proyecto padre tiene que tener el tipo de empaquetamiento "pom"
+
+	<packaging>pom</packaging>
+
+
+Para referenciar al padre deberemos incluir la etiqueta parent
+
+	<parent>
+		<groupId>cursomaven</groupId>
+		<artifactId>probase</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+En el caso de que no tengamos publicado el pom padre, podemos utilizar la propiedad relativePath para indicarle por ejemplo que suba un nivel para coger el pom del padre
+
+	<parent>
+		<groupId>cursomaven</groupId>
+		<artifactId>probase</artifactId>
+		<version>1.0-SNAPSHOT</version>
+		<relativePath>../probase</relativePath>
+	</parent>
+
+
+###################################################################################
+AGREGACIÓN
+
+Se usará la etiqueta modules para referenciar otros proyectos
+
+	<modules>
+		<module>../herencia</module>
+		<module>../primero</module>
+		<module>../profiles</module>
+	</modules>
+
+Con el siguiente comando podemos ver el orden que realizará la compilación:
+
+	mvn validate 
+
+###################
+
+################################################################
+Despliegue
+
+->>Arrancar nexus:
+
+nexus start
+
+Url: localhost:8081/nexus
+admin / admin123
+
+->>Crear un repositorio
+
+	repositories -> hosted repository
+
+*Podemos configurarlo para que sea de tipo release o snapshot 
+**Tambien se puede configurar si queremos que se puedan realizar redespliegues sin incrementar la versión
+
+->>Hay que crear un usuario y roles (nexus deploiment rol y all maven repositories)
+
+security -> users
+
+
+->> Configurar los repositorios en maven
+
+Incluir en el proyecto la configuración del repositorio
+
+	<distributionManagement>
+		<repository>
+			<id>cursomaven_r</id>
+			<name>Repositorio del curso de maven</name>
+			<url>http://localhost:8081/nexus/content/repositories/cursomaven_r</url>
+		</repository>
+
+		<snapshotRepository>
+			<id>cursomaven_s</id>
+			<url>http://localhost:8081/nexus/content/repositories/cursomaven_s</url>
+		</snapshotRepository>
+		
+	</distributionManagement>
+
+Incluir en el settings.xml los usuarios para los repositorios
+
+    <server>
+      <id>cursomaven_r</id>
+      <username>cursomaven</username>
+      <password>123</password>
+    </server>
+    
+    <server>
+      <id>cursomaven_s</id>
+      <username>cursomaven</username>
+      <password>123</password>
+    </server>
+
+Configurar los proyectos que quiren usar dependencias de nexus para que pueda descargarse las librerias:
+
+	<repositories>
+		<repository>
+			<id>cursomaven</id>
+			<url>http://localhost:8081/nexus/content/repositories/cursomaven_r</url>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>fail</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+Con la propiedad <checksumPolicy>fail</checksumPolicy> le indicamos que si al descargarse el jar, la huella del hash no es correcta que provoque un fail en lugar de un warning
+
+Con la propiedad updatePolicy podemos indicar el periodo con el que comprueba si existen actualizaciones en el repositorio
+
+###################################################################################
+ARCHETYPES
+
+Existe un arquetipo para generar proyectos que a su vez van a ser arquetipos:
+
+mvn archetype:generate -DgroupId=cursomaven -DartifactId=projee7 -Dversion=1.0-RELEASE -DarchetypeArtifactId=maven-archetype-archetype -DinteractiveMode=false
+
+Hay que modificar la clase java para que incluya las variables, al igual que el pom.xml
+
+En la carpeta src/main/resources/META-INF/maven deberemos crear el fichero archetype-metadata.xml con el contenido de la configuración del arquetipo
+
+Una vez queramos generar un nuevo proyecto en función a nuestro arquetipo deberemos ejecutar lo siguiente:
+
+mvn archetype:generate -DgroupId=cursomaven -DartifactId=testarquetipo -Dversion=1.0-RELEASE -DarchetypeArtifactId=projee7 -DarchetypeGroupId=cursomaven -DarchetypeVersion=1.0-RELEASE -DinteractiveMode=false -Ddepartamento=informatica
+
+
+###################################################################################
+Crear un arquetype desde un proyecto:
+
+	mvn archetype:create-from-project
+
+Nos generará dentro de la carpeta target/generated-sources/archetype el arquetipo
+
+
+###################################################################################
+PLUGINS
+
+->>Crear un plugin:
+
+	mvn archetype:generate -DgroupId=cursomaven -DartifactId=demo-maven-plugin 
+			       -Dversion=1.0-RELEASE -DarchetypeArtifactId=maven-archetype-plugin 		
+			       -DinteractiveMode=false
+
+	**El nombre del artifactId debe respetarse la nomenclatura XXX-maven-plugin 
+
+->>Añadimos al proyecto generado la siguiente dependencia:
+
+	maven-plugin-annotations
+
+		<dependency>
+			<groupId>org.apache.maven.plugin-tools</groupId>
+			<artifactId>maven-plugin-annotations</artifactId>
+			<version>3.4</version>
+		</dependency>
+
+**Las versiones actuales de maven-plugin-api permite crear la parte dinamica a partir de anotaciones, en lugar del modo antiguo de comentarios javadoc
+
+->>Crear una clase que herede de org.apache.maven.plugin.AbstractMojo
+
+->>Invocar 
+
+mvn cursomaven:demo-maven-plugin:1.0-RELEASE:demo -DjdbcUrl=www.url.com
+
+###################################################################################
+Usar el plugin de forma abreviada creando un pluginGroup 
+
+  <pluginGroups>	
+    <pluginGroup>cursomaven</pluginGroup>
+  </pluginGroups>
+
+mvn demo:demo -DjdbcUrl=www.url.com
+
+###################################################################################
+
+Importar proyectos de maven al eclipse:
+
+->> El primer método es usar el comando mvn eclipse:eclipse el cual creará el .classpath y el .project
+
+
+
+
+
+
+###################################################################################
+
+¿porque está metiendo los fuentes?
+
+¿porque no mete los properties ni los xml de dentro de resources?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

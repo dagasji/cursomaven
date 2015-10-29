@@ -1,0 +1,157 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>cursomaven</groupId>
+	<artifactId>profiles</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>profiles</name>
+	<url>http://maven.apache.org</url>
+
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- <jdbc.driver>com.mysql.MySqlDriver</jdbc.driver> -->
+		<!-- <jdbc.url>url:sdasdasd</jdbc.url> -->
+		<!-- <jdbc.user>dba</jdbc.user> -->
+		<!-- <jdbc.pwd>123</jdbc.pwd> -->
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
+
+
+	<profiles>
+		<profile>
+      		<id>desarrollo</id>
+      		<activation>
+      			<activeByDefault>true</activeByDefault>      			
+      		</activation>
+      		
+      		<build>
+      			<filters>
+					<filter>src/main/filters/desarrollo.properties</filter>
+				</filters>      		
+      		</build>  
+      		
+      		<properties>
+      			<nivelDeRegistro>DEBUG</nivelDeRegistro>
+      		</properties>    		
+    	</profile>
+    	
+    	<profile>
+      		<id>produccion</id>      		
+      		<build>
+      			<filters>
+					<filter>src/main/filters/produccion.properties</filter>
+				</filters>      		
+      		</build>   
+      		
+      		<properties>
+      			<nivelDeRegistro>WARN</nivelDeRegistro>
+      		</properties>     		
+    	</profile>
+    	
+    	<profile>
+      		<id>weblogic</id>
+      		<activation>      			
+      			<file>
+      				<exists>src/main/webapp/WEB-INF/weblogic.xml</exists>
+      			</file>
+      		</activation>
+      		
+    	</profile>
+    	
+    	<profile>
+      		<id>jdk7</id>
+      		<activation>      			
+      			<jdk>[1.5,1.8]</jdk>
+      		</activation>
+    	</profile>
+    	
+    	<profile>
+      		<id>linuxi386</id>
+      		<activation>      			
+      			<os>
+      				<name>linux</name>
+      				<family>unix</family>
+      				<arch>i386</arch>
+      			</os>
+      		</activation>
+    	</profile>
+    	
+    	<profile>
+      		<id>modoAuditoria</id>
+      		<activation>      			
+      			<property>
+      				<name>auditoria</name>
+      				<value>true</value>
+      			</property>
+      		</activation>
+    	</profile>
+    	
+	</profiles>
+
+	<build>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>		
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<!-- http://maven.apache.org/plugins/maven-compiler-plugin/ -->
+					<source>1.7</source>
+					<target>1.7</target>
+
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<phase>package</phase>
+					</execution>
+
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+
+
+
+
+</project>

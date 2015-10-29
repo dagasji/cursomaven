@@ -1,0 +1,186 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cursomaven</groupId>
+	<artifactId>prosite</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0-RELEASE</version>
+	<name>prosite</name>
+
+	<url>http://proyectos.acme.com/prosite</url>
+
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ftp</artifactId>
+				<version>2.10</version>
+			</extension>
+		</extensions>
+	</build>
+	
+	
+	
+	<description>
+	  <![CDATA[man is the system's manual pager.  Each page argument given to man is normally the name of a program, utility or function.
+	       The manual page associated with each of these arguments is then found and displayed.  A section, if provided, will  direct
+	       man  to look only in that section of the manual.  The default action is to search in all of the available sections follow‐
+	       ing a pre-defined order ("1 1p 8 2 3 3p 4 5 6 7 9 0p n l p o 1x 2x 3x 4x 5x 6x 7x 8x" by default, unless overridden by the
+	       SECTION directive in /etc/man_db.conf), and to show only the first page found, even if page exists in several sections. 
+	  ]]>
+	</description>
+	<inceptionYear>2015</inceptionYear>
+	<organization>
+		<name>Acme, Ltd.</name>
+		<url>http://www.acme.com</url>
+	</organization>
+	<developers>
+		<developer>
+			<id>dev100</id>
+			<name>Daniel Pérez</name>
+			<email>dani.perez@acme.com</email>
+			<organization>Acme, Ltd.</organization>
+			<roles>
+				<role>Programador</role>
+			</roles>
+			<properties>
+				<idempleado>d100</idempleado>
+			</properties>
+		</developer>
+		<developer>
+			<id>dev200</id>
+			<name>Pedro Pérez</name>
+			<email>pedro.perez@acme.com</email>
+			<organization>Acme, Ltd.</organization>
+			<roles>
+				<role>Analista</role>
+			</roles>
+			<properties>
+				<idempleado>d200</idempleado>
+			</properties>
+		</developer>
+	</developers>
+	<contributors>
+		<contributor>
+			<name>Alberto Pérez</name>
+			<email>alberto.perez@acme.com</email>
+			<organization>Acme, Ltd.</organization>
+			<roles>
+				<role>Pruebas</role>
+			</roles>
+			<properties>
+				<idempleado>d2000</idempleado>
+			</properties>
+		</contributor>
+	</contributors>
+
+	<licenses>
+		<license>
+			<name>GNU v3.0</name>
+			<url>http://www.gnu.org/licenses/glp.3.0.en.html</url>
+		</license>
+	</licenses>
+	
+	<scm>
+		<connection>
+			scm:svn:https://svn.acme.com/prosite
+		</connection>
+	</scm>
+
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>http://jenkins.acme.com/prosite</url>
+	</ciManagement>
+	
+	<issueManagement>
+		<system>JIRA</system>
+		<url>http://jira.acme.com/prosite</url>	
+	</issueManagement>
+	
+	<mailingLists>
+		<mailingList>
+			<name>Soporte</name>
+			<archive>http://maillist.acme.com/prosite</archive>
+			<post>enviar.prosite@acme.com</post>
+			<subscribe>subscribir.prosite@acme.com</subscribe>
+			<unsubscribe>subscribir.prosite@acme.com</unsubscribe>
+		</mailingList>
+	</mailingLists>
+	
+	<distributionManagement>
+		<site>
+			<id>wikisite</id>
+			<name>Portal de proyectos</name>
+			<url>ftp://localhost/wiki</url>			
+		</site>
+	</distributionManagement>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>cursomaven</groupId>
+			<artifactId>primero</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>3.5.5-Final</version>
+			<scope>runtime</scope>
+			<!-- <scope>provided</scope> -->
+
+			<exclusions>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>dom4j</groupId>
+					<artifactId>dom4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.transaction</groupId>
+					<artifactId>jta</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>3.0.5.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.37</version>
+		</dependency>
+
+		<dependency>
+			<groupId>a</groupId>
+			<artifactId>a</artifactId>
+			<version>a</version>
+			<scope>system</scope>
+			<systemPath>${java.home}/../lib/tools.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<artifactId>derby-jdbc</artifactId>
+			<groupId>com.acme</groupId>
+			<version>10.12.1.1</version>
+		</dependency>
+
+
+	</dependencies>
+</project>

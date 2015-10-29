@@ -1,0 +1,97 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cursomaven</groupId>
+  <artifactId>repository</artifactId>  
+  <packaging>war</packaging>
+  <version>1.0-RELEASE</version>
+  <name>repository</name>
+  <url>http://maven.apache.org</url>
+  
+  
+  <dependencies>
+  
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+    	<groupId>cursomaven</groupId>
+    	<artifactId>primero</artifactId>
+    	<version>1.0-RELEASE</version>    	
+    	<scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+		<groupId>org.hibernate</groupId>
+		<artifactId>hibernate-core</artifactId>
+		<version>3.5.5-Final</version>
+		<scope>runtime</scope>
+<!-- 	<scope>provided</scope> -->
+
+		<exclusions>
+			<exclusion>
+          		<groupId>xml-apis</groupId>
+          		<artifactId>xml-apis</artifactId>
+        	</exclusion>
+        	<exclusion>
+          		<groupId>dom4j</groupId>
+          		<artifactId>dom4j</artifactId>
+        	</exclusion>
+        	<exclusion>
+        		<groupId>javax.transaction</groupId>
+        		<artifactId>jta</artifactId>
+        	</exclusion>
+		</exclusions>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-webmvc</artifactId>
+		<version>3.0.5.RELEASE</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>mysql</groupId>
+		<artifactId>mysql-connector-java</artifactId>
+		<version>5.1.37</version>
+	</dependency>	
+
+	<dependency>
+		<groupId>a</groupId>
+		<artifactId>a</artifactId>
+		<version>a</version>
+		<scope>system</scope>
+		<systemPath>${java.home}/../lib/tools.jar</systemPath>
+	</dependency>
+	
+	<dependency>
+		<artifactId>derby-jdbc</artifactId>
+		<groupId>com.acme</groupId>
+		<version>10.12.1.1</version>
+	</dependency>
+	    
+    
+  </dependencies>
+
+	<repositories>
+		<repository>
+			<id>cursomaven</id>
+			<url>http://localhost:8081/nexus/content/repositories/cursomaven_r</url>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>fail</checksumPolicy>
+				
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+  
+</project>
